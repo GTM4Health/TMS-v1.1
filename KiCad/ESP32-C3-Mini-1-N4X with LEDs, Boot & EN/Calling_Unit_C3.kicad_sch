@@ -2285,150 +2285,14 @@
 						)
 					)
 				)
-				(pin passive line
-					(at 33.02 -55.88 180)
-					(length 5.08)
-					(name "GND_23"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "54"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 33.02 -58.42 180)
-					(length 5.08)
-					(name "GND_24"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "55"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 33.02 -60.96 180)
-					(length 5.08)
-					(name "GND_25"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "56"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 33.02 -63.5 180)
-					(length 5.08)
-					(name "GND_26"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "57"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 33.02 -66.04 180)
-					(length 5.08)
-					(name "GND_27"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "58"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 33.02 -68.58 180)
-					(length 5.08)
-					(name "GND_28"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "59"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 33.02 -71.12 180)
-					(length 5.08)
-					(name "GND_29"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "60"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 33.02 -73.66 180)
-					(length 5.08)
-					(name "GND_30"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "61"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
+				
+				
+				
+				
+				
+				
+				
+				
 			)
 			(embedded_fonts no)
 		)
@@ -4239,10 +4103,6 @@
 	(no_connect
 		(at 160.02 58.42)
 		(uuid "6fe36410-9a30-49e5-adb8-457e02485c6d")
-	)
-	(no_connect
-		(at 160.02 99.06)
-		(uuid "7f9d4b58-8b68-45ed-b835-64c211cdce91")
 	)
 	(no_connect
 		(at 160.02 96.52)
@@ -6831,7 +6691,7 @@
 				)
 			)
 		)
-		(property "Value" "100nF"
+		(property "Value" "1uF"
 			(at 147.32 60.96 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7292,30 +7152,14 @@
 		(pin "53"
 			(uuid "e6ef83cd-2efe-4d54-b603-b393b7ce65d2")
 		)
-		(pin "54"
-			(uuid "5afb6905-c237-47bb-8453-a193a4d756a4")
-		)
-		(pin "55"
-			(uuid "5eeefb29-f764-4f32-a20b-5c02527049c0")
-		)
-		(pin "56"
-			(uuid "def29e5f-b8bd-43e4-8aca-e13eedd02614")
-		)
-		(pin "57"
-			(uuid "5588ec8e-1bb8-4aa5-a617-d11b83a9c7ba")
-		)
-		(pin "58"
-			(uuid "a700bc78-2d18-4c5e-be6b-0698c7898291")
-		)
-		(pin "59"
-			(uuid "7a2459f0-f40b-4cb0-acd4-9a958826d542")
-		)
-		(pin "60"
-			(uuid "2b5fcac0-a10d-462e-8df9-bfa39ea4c887")
-		)
-		(pin "61"
-			(uuid "0367b833-759c-40bb-b3a4-01a20ec4a348")
-		)
+		
+		
+		
+		
+		
+		
+		
+		
 		(instances
 			(project "Calling_Unit_C3"
 				(path "/009b21c2-4b70-454e-8907-4ec81d1e38a2"
@@ -8189,7 +8033,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 60.96 64.77 0)
 			(hide yes)
 			(show_name no)
@@ -8856,7 +8700,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
 			(at 55.88 64.77 0)
 			(hide yes)
 			(show_name no)
@@ -9265,4 +9109,102 @@
 		)
 	)
 	(embedded_fonts no)
+	(symbol
+		(lib_id "Device:R")
+		(at 142.24 95.25 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "713c74ea-afbb-4d99-9f13-fc5c3091dd47")
+		(property "Reference" "R10"
+			(at 139.7 95.25 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10k"
+			(at 144.78 95.25 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+			(at 142.24 95.25 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 142.24 95.25 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 142.24 95.25 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0636c5c6-79da-4e1a-abea-419c6078ff2b")
+		)
+		(pin "2"
+			(uuid "bc4e9e6d-0a90-435e-9ff5-70f6ca843686")
+		)
+		(instances
+			(project "Calling_Unit_C3"
+				(path "/009b21c2-4b70-454e-8907-4ec81d1e38a2"
+					(reference "R10")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(label "ESP"
+		(at 142.24 91.44 90)
+		(fields_autoplaced yes)
+		(uuid "1c8b7856-2aee-4c76-b014-59427f2740b2")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+	)
+	(wire
+		(pts
+			(xy 142.24 99.06) (xy 160.02 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b46a7cb8-79ae-4ce9-9d51-7b1f4d649159")
+	)
 )
