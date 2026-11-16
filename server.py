@@ -174,19 +174,11 @@ def resolve_counter(data):
     return "Counter 1", "Calling Unit 1"
 
 
-@app.route('/static/<path:filename>')
-def serve_static_file(filename):
-    return send_from_directory(os.path.join(BASE_DIR, 'static'), filename)
-
-
 # ==========================
 # MAIN DISPLAY
 # ==========================
 
 @app.route('/')
-@app.route('/server.py')
-@app.route('/api/index.py')
-@app.route('/api/index')
 def home():
     return render_template("display.html")
 
