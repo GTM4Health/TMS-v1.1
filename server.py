@@ -3,6 +3,8 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 import sqlite3
 import os
+import tempfile
+import shutil
 from datetime import datetime
 
 # ==========================
@@ -47,14 +49,13 @@ else:
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# On Vercel / serverless, filesystem is read-only except /tmp
+# On Vercel / serverless, filesystem is read-only except temp directory
 if os.environ.get("VERCEL"):
-    DATABASE = "/tmp/token.db"
+    DATABASE = os.path.join(tempfile.gettempdir(), "token.db")
     bundled_db = os.path.join(BASE_DIR, "token.db")
-    if os.path.exists(bundled_db) and not os.path.exists("/tmp/token.db"):
+    if os.path.exists(bundled_db) and not os.path.exists(DATABASE):
         try:
-            import shutil
-            shutil.copyfile(bundled_db, "/tmp/token.db")
+            shutil.copyfile(bundled_db, DATABASE)
         except Exception:
             pass
 else:
@@ -178,6 +179,9 @@ def resolve_counter(data):
 # ==========================
 
 @app.route('/')
+@app.route('/server.py')
+@app.route('/api/index.py')
+@app.route('/api/index')
 def home():
     return render_template("display.html")
 
@@ -531,24 +535,25 @@ def latest_token():
 @app.route('/kiosk')
 def kiosk():
 
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+    token = "000"
+    try:
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        SELECT token
-        FROM tokens
-        ORDER BY id DESC
-        LIMIT 1
-    """)
+        cursor.execute("""
+            SELECT token
+            FROM tokens
+            ORDER BY id DESC
+            LIMIT 1
+        """)
 
-    last = cursor.fetchone()
+        last = cursor.fetchone()
+        conn.close()
 
-    conn.close()
-
-    if last is None:
-        token = "000"
-    else:
-        token = last[0]
+        if last is not None:
+            token = last[0]
+    except Exception as e:
+        print("kiosk db notice:", e)
 
     return render_template(
         "kiosk.html",
