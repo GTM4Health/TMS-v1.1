@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, send_from_directory
 from flask_socketio import SocketIO
 from flask_cors import CORS
 import sqlite3
@@ -172,6 +172,11 @@ def resolve_counter(data):
 
     conn.close()
     return "Counter 1", "Calling Unit 1"
+
+
+@app.route('/static/<path:filename>')
+def serve_static_file(filename):
+    return send_from_directory(os.path.join(BASE_DIR, 'static'), filename)
 
 
 # ==========================
