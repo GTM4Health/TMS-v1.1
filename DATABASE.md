@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS tokens (
     token TEXT NOT NULL,
     status TEXT NOT NULL,
     counter TEXT DEFAULT 'Counter 1',
-    generated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    generated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    called_at TIMESTAMP
 );
 ```
 
@@ -43,6 +44,7 @@ CREATE TABLE IF NOT EXISTS tokens (
 | `status` | `TEXT` | `NOT NULL` | *None* | Current lifecycle state: `'Waiting'`, `'Serving'`, or `'Completed'`. |
 | `counter` | `TEXT` | *None* | `'Counter 1'` | Name or room of the counter handling the token (e.g. `'Room 1'`). |
 | `generated_time` | `TIMESTAMP` | *None* | `CURRENT_TIMESTAMP` | UTC timestamp recorded when the token was dispensed. |
+| `called_at` | `TIMESTAMP` | *None* | *None* | High-precision timestamp when the token was called or recalled (ensures multi-counter displays always show the most recently called room). |
 
 ### 2.3 Token Lifecycle States
 

@@ -3,6 +3,7 @@ from flask_socketio import SocketIO
 from flask_cors import CORS
 import sqlite3
 import os
+from datetime import datetime
 
 # ==========================
 # Flask App Configuration
@@ -55,7 +56,8 @@ def init_db():
             token TEXT NOT NULL,
             status TEXT NOT NULL,
             counter TEXT DEFAULT 'Counter 1',
-            generated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            generated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            called_at TIMESTAMP
         )
     """)
 
@@ -71,11 +73,13 @@ def init_db():
         )
     """)
 
-    # Safe migration: ensure counter column exists if table was created previously
+    # Safe migration: ensure counter and called_at columns exist if table was created previously
     cursor.execute("PRAGMA table_info(tokens)")
     columns = [col[1] for col in cursor.fetchall()]
     if "counter" not in columns:
         cursor.execute("ALTER TABLE tokens ADD COLUMN counter TEXT DEFAULT 'Counter 1'")
+    if "called_at" not in columns:
+        cursor.execute("ALTER TABLE tokens ADD COLUMN called_at TIMESTAMP")
 
     conn.commit()
     conn.close()
@@ -92,42 +96,58 @@ def resolve_counter(data):
     device_id = (data.get("device_id") or "").strip().upper()
     explicit_counter = (data.get("counter") or "").strip()
 
-    target_key = device_id or explicit_counter.upper()
-
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute("""
-        SELECT unit_name, proceed_text
-        FROM devices
-        WHERE device_id=? OR unit_name=?
-    """, (target_key, explicit_counter))
-    row = cursor.fetchone()
-    if row:
-        unit_name, proceed_text = row
-        cursor.execute("UPDATE devices SET last_seen=CURRENT_TIMESTAMP WHERE device_id=? OR unit_name=?", (target_key, explicit_counter))
-        conn.commit()
-        conn.close()
-        return proceed_text, unit_name
 
-    if target_key and not target_key.startswith("IP:"):
-        cursor.execute("SELECT COUNT(*) FROM devices WHERE device_type='calling_unit' AND device_id NOT LIKE 'IP:%'")
-        cnt = cursor.fetchone()[0] + 1
-        unit_name = f"Calling Unit {cnt}"
-        proceed_text = f"Room {cnt}"
+    # 1. If device_id provided, look up by hardware MAC
+    if device_id:
         cursor.execute("""
-            INSERT INTO devices (device_id, device_type, unit_number, unit_name, proceed_text)
-            VALUES (?, 'calling_unit', ?, ?, ?)
-        """, (target_key, cnt, unit_name, proceed_text))
-        conn.commit()
-        conn.close()
-        socketio.emit("devices_updated")
-        return proceed_text, unit_name
+            SELECT unit_name, proceed_text
+            FROM devices
+            WHERE device_id=?
+        """, (device_id,))
+        row = cursor.fetchone()
+        if row:
+            unit_name, proceed_text = row
+            cursor.execute("UPDATE devices SET last_seen=CURRENT_TIMESTAMP WHERE device_id=?", (device_id,))
+            conn.commit()
+            conn.close()
+            return proceed_text, unit_name
 
-    conn.close()
+        # Auto-register new hardware calling unit
+        if not device_id.startswith("IP:"):
+            cursor.execute("SELECT COUNT(*) FROM devices WHERE device_type='calling_unit' AND device_id NOT LIKE 'IP:%'")
+            cnt = cursor.fetchone()[0] + 1
+            unit_name = f"Calling Unit {cnt}"
+            proceed_text = f"Room {cnt}"
+            cursor.execute("""
+                INSERT INTO devices (device_id, device_type, unit_number, unit_name, proceed_text)
+                VALUES (?, 'calling_unit', ?, ?, ?)
+            """, (device_id, cnt, unit_name, proceed_text))
+            conn.commit()
+            conn.close()
+            socketio.emit("devices_updated")
+            return proceed_text, unit_name
 
+    # 2. If explicit_counter provided (from web operator, e.g. "Room 1", "Counter 1")
     if explicit_counter:
+        cursor.execute("""
+            SELECT unit_name, proceed_text
+            FROM devices
+            WHERE unit_name=? OR proceed_text=?
+        """, (explicit_counter, explicit_counter))
+        row = cursor.fetchone()
+        if row:
+            unit_name, proceed_text = row
+            cursor.execute("UPDATE devices SET last_seen=CURRENT_TIMESTAMP WHERE unit_name=? OR proceed_text=?", (explicit_counter, explicit_counter))
+            conn.commit()
+            conn.close()
+            return proceed_text, unit_name
+
+        conn.close()
         return explicit_counter, explicit_counter
 
+    conn.close()
     return "Counter 1", "Calling Unit 1"
 
 
@@ -162,7 +182,7 @@ def current_token():
             SELECT token, counter
             FROM tokens
             WHERE status='Serving' AND counter=?
-            ORDER BY id DESC
+            ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
             LIMIT 1
         """, (counter,))
     else:
@@ -170,7 +190,7 @@ def current_token():
             SELECT token, counter
             FROM tokens
             WHERE status='Serving'
-            ORDER BY id DESC
+            ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
             LIMIT 1
         """)
 
@@ -184,7 +204,7 @@ def current_token():
                 SELECT token, counter
                 FROM tokens
                 WHERE status IN ('Serving', 'Completed') AND counter=?
-                ORDER BY id DESC
+                ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
                 LIMIT 1
             """, (counter,))
         else:
@@ -192,7 +212,7 @@ def current_token():
                 SELECT token, counter
                 FROM tokens
                 WHERE status IN ('Serving', 'Completed')
-                ORDER BY id DESC
+                ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
                 LIMIT 1
             """)
         row = cursor.fetchone()
@@ -225,7 +245,7 @@ def serving_all():
         SELECT token, counter
         FROM tokens
         WHERE status='Serving'
-        ORDER BY id DESC
+        ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
     """)
 
     rows = cursor.fetchall()
@@ -614,7 +634,7 @@ def next_token():
             SELECT token
             FROM tokens
             WHERE status='Serving' AND counter=?
-            ORDER BY id DESC
+            ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
             LIMIT 1
         """, (counter,))
         curr = cursor.fetchone()
@@ -623,7 +643,7 @@ def next_token():
                 SELECT token
                 FROM tokens
                 WHERE counter=?
-                ORDER BY id DESC
+                ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
                 LIMIT 1
             """, (counter,))
             curr = cursor.fetchone()
@@ -641,6 +661,7 @@ def next_token():
 
     token_id = row[0]
     token = row[1]
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 
     # ONLY when an actual new token exists:
     # 2. Mark previous serving token for this counter as Completed
@@ -653,9 +674,9 @@ def next_token():
     # 3. Mark the new waiting token as Serving for this counter
     cursor.execute("""
         UPDATE tokens
-        SET status='Serving', counter=?
+        SET status='Serving', counter=?, called_at=?
         WHERE id=?
-    """, (counter, token_id))
+    """, (counter, now_str, token_id))
 
     conn.commit()
     conn.close()
@@ -693,10 +714,10 @@ def call_again():
 
     # 1. Look for active Serving token for this counter
     cursor.execute("""
-        SELECT token, counter
+        SELECT id, token, counter
         FROM tokens
         WHERE status='Serving' AND counter=?
-        ORDER BY id DESC
+        ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
         LIMIT 1
     """, (counter,))
     row = cursor.fetchone()
@@ -704,10 +725,10 @@ def call_again():
     # 2. If none serving for this counter, look for last token called by this counter (even if Completed)
     if row is None:
         cursor.execute("""
-            SELECT token, counter
+            SELECT id, token, counter
             FROM tokens
             WHERE counter=?
-            ORDER BY id DESC
+            ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
             LIMIT 1
         """, (counter,))
         row = cursor.fetchone()
@@ -715,10 +736,10 @@ def call_again():
     # 3. Fall back to ANY active serving token across any counter
     if row is None:
         cursor.execute("""
-            SELECT token, counter
+            SELECT id, token, counter
             FROM tokens
             WHERE status='Serving'
-            ORDER BY id DESC
+            ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
             LIMIT 1
         """)
         row = cursor.fetchone()
@@ -726,10 +747,10 @@ def call_again():
     # 4. Fall back to most recent token called across any counter
     if row is None:
         cursor.execute("""
-            SELECT token, counter
+            SELECT id, token, counter
             FROM tokens
             WHERE status IN ('Serving', 'Completed')
-            ORDER BY id DESC
+            ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
             LIMIT 1
         """)
         row = cursor.fetchone()
@@ -737,9 +758,9 @@ def call_again():
     # 5. Last fallback: most recent token in tokens table
     if row is None:
         cursor.execute("""
-            SELECT token, counter
+            SELECT id, token, counter
             FROM tokens
-            ORDER BY id DESC
+            ORDER BY COALESCE(called_at, generated_time) DESC, id DESC
             LIMIT 1
         """)
         row = cursor.fetchone()
@@ -754,15 +775,23 @@ def call_again():
             "unit_name": unit_name
         })
 
-    token = row[0]
-    token_counter = row[1] if row[1] else counter
+    token_id = row[0]
+    token = row[1]
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 
-    # Ensure this token is in Serving status
+    # Mark other serving tokens on this counter as Completed
     cursor.execute("""
         UPDATE tokens
-        SET status='Serving', counter=?
-        WHERE token=?
-    """, (token_counter, token))
+        SET status='Completed'
+        WHERE status='Serving' AND counter=? AND id != ?
+    """, (counter, token_id))
+
+    # Ensure this token is in Serving status for THIS counter, with updated called_at
+    cursor.execute("""
+        UPDATE tokens
+        SET status='Serving', counter=?, called_at=?
+        WHERE id=?
+    """, (counter, now_str, token_id))
     conn.commit()
     conn.close()
 
@@ -824,6 +853,7 @@ def call_specific():
         }), 404
 
     token_id = row[0]
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 
     # Complete current serving token ONLY for THIS counter
     cursor.execute("""
@@ -835,9 +865,9 @@ def call_specific():
     # Make requested token serving for THIS counter
     cursor.execute("""
         UPDATE tokens
-        SET status='Serving', counter=?
+        SET status='Serving', counter=?, called_at=?
         WHERE id=?
-    """, (counter, token_id))
+    """, (counter, now_str, token_id))
 
     conn.commit()
     conn.close()

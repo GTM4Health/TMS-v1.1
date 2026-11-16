@@ -140,16 +140,11 @@ bool loadWiFi() {
 }
 
 void saveLastToken(int num) {
-    preferences.begin("tms_tok", false);
-    preferences.putInt("last_tok", num);
-    preferences.end();
+    // Disabled: server is the single source of truth so reset works properly
 }
 
 int loadLastToken() {
-    preferences.begin("tms_tok", true);
-    int num = preferences.getInt("last_tok", 0);
-    preferences.end();
-    return num;
+    return 0;
 }
 
 void clearWiFi() {
@@ -292,8 +287,8 @@ void generateToken() {
     http.begin(url);
     http.addHeader("Content-Type", "application/json");
 
-    int prevToken = loadLastToken();
-    String body = "{\"device_id\":\"" + getDeviceMAC() + "\",\"last_token\":" + String(prevToken) + "}";
+    // Server manages the token sequence. Sending only device_id allows clean resets to 001.
+    String body = "{\"device_id\":\"" + getDeviceMAC() + "\"}";
     int code = http.POST(body);
 
     Serial.print("Generate HTTP code: ");
@@ -324,6 +319,11 @@ void generateToken() {
 void setup() {
     Serial.begin(115200);
     delay(1000);
+
+    // Erase any legacy tokens stuck in ESP32 flash memory
+    preferences.begin("tms_tok", false);
+    preferences.clear();
+    preferences.end();
 
     pinMode(buttonPin, INPUT_PULLUP);
 
