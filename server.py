@@ -24,13 +24,21 @@ CORS(
 )
 
 # Socket.IO configuration
-socketio = SocketIO(
-    app,
-    cors_allowed_origins=[
-        "https://gtm-tms.vercel.app"
-    ],
-    async_mode="eventlet"
-)
+if os.environ.get("VERCEL"):
+    socketio = SocketIO(
+        app,
+        cors_allowed_origins="*",
+        async_mode="threading"
+    )
+else:
+    socketio = SocketIO(
+        app,
+        cors_allowed_origins=[
+            "https://gtm-tms.vercel.app",
+            "https://gtm-tms.vercel.app/"
+        ],
+        async_mode="eventlet"
+    )
 
 
 # ==========================
@@ -38,7 +46,19 @@ socketio = SocketIO(
 # ==========================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATABASE = os.path.join(BASE_DIR, "token.db")
+
+# On Vercel / serverless, filesystem is read-only except /tmp
+if os.environ.get("VERCEL"):
+    DATABASE = "/tmp/token.db"
+    bundled_db = os.path.join(BASE_DIR, "token.db")
+    if os.path.exists(bundled_db) and not os.path.exists("/tmp/token.db"):
+        try:
+            import shutil
+            shutil.copyfile(bundled_db, "/tmp/token.db")
+        except Exception:
+            pass
+else:
+    DATABASE = os.path.join(BASE_DIR, "token.db")
 
 
 # ==========================
@@ -46,43 +66,45 @@ DATABASE = os.path.join(BASE_DIR, "token.db")
 # ==========================
 
 def init_db():
+    try:
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
 
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tokens(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                token TEXT NOT NULL,
+                status TEXT NOT NULL,
+                counter TEXT DEFAULT 'Counter 1',
+                generated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                called_at TIMESTAMP
+            )
+        """)
 
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS tokens(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            token TEXT NOT NULL,
-            status TEXT NOT NULL,
-            counter TEXT DEFAULT 'Counter 1',
-            generated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            called_at TIMESTAMP
-        )
-    """)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS devices(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                device_id TEXT UNIQUE NOT NULL,
+                device_type TEXT NOT NULL DEFAULT 'calling_unit',
+                unit_number INTEGER NOT NULL DEFAULT 1,
+                unit_name TEXT NOT NULL,
+                proceed_text TEXT NOT NULL,
+                last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
 
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS devices(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            device_id TEXT UNIQUE NOT NULL,
-            device_type TEXT NOT NULL DEFAULT 'calling_unit',
-            unit_number INTEGER NOT NULL DEFAULT 1,
-            unit_name TEXT NOT NULL,
-            proceed_text TEXT NOT NULL,
-            last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
+        # Safe migration: ensure counter and called_at columns exist if table was created previously
+        cursor.execute("PRAGMA table_info(tokens)")
+        columns = [col[1] for col in cursor.fetchall()]
+        if "counter" not in columns:
+            cursor.execute("ALTER TABLE tokens ADD COLUMN counter TEXT DEFAULT 'Counter 1'")
+        if "called_at" not in columns:
+            cursor.execute("ALTER TABLE tokens ADD COLUMN called_at TIMESTAMP")
 
-    # Safe migration: ensure counter and called_at columns exist if table was created previously
-    cursor.execute("PRAGMA table_info(tokens)")
-    columns = [col[1] for col in cursor.fetchall()]
-    if "counter" not in columns:
-        cursor.execute("ALTER TABLE tokens ADD COLUMN counter TEXT DEFAULT 'Counter 1'")
-    if "called_at" not in columns:
-        cursor.execute("ALTER TABLE tokens ADD COLUMN called_at TIMESTAMP")
-
-    conn.commit()
-    conn.close()
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print("init_db exception (safe fallback in read-only environments):", e)
 
 
 init_db()
