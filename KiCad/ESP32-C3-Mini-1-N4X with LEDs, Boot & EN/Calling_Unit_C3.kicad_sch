@@ -6168,7 +6168,7 @@
 		)
 		(uuid "18a57ad0-176e-4b5f-afe8-9c016ec3a81b")
 	)
-	(label "ESP"
+	(label "3V3"
 		(at 227.33 53.34 0)
 		(effects
 			(font
@@ -6178,7 +6178,7 @@
 		)
 		(uuid "34ea9f59-2df9-4bc0-ad6e-3b805a38bce0")
 	)
-	(label "ESP"
+	(label "3V3"
 		(at 128.27 91.44 90)
 		(effects
 			(font
@@ -6208,7 +6208,7 @@
 		)
 		(uuid "407a678a-249e-4fb0-825f-96c0ac6ca178")
 	)
-	(label "ESP"
+	(label "3V3"
 		(at 76.2 120.65 0)
 		(effects
 			(font
@@ -6238,7 +6238,7 @@
 		)
 		(uuid "765d66aa-5395-4f86-94a7-56b0733e601d")
 	)
-	(label "ESP"
+	(label "3V3"
 		(at 152.4 50.8 180)
 		(effects
 			(font
@@ -6248,7 +6248,7 @@
 		)
 		(uuid "92abad4a-5909-407c-8fc7-b90dd81b2a89")
 	)
-	(label "ESP"
+	(label "3V3"
 		(at 227.33 77.47 0)
 		(effects
 			(font
@@ -6268,7 +6268,7 @@
 		)
 		(uuid "aa1a9340-29d5-4d61-a5ec-007d6fa3350b")
 	)
-	(label "ESP"
+	(label "3V3"
 		(at 144.78 38.1 0)
 		(effects
 			(font
@@ -6318,7 +6318,7 @@
 		)
 		(uuid "e47ea196-c70d-4614-a3d4-7a0f65aa8430")
 	)
-	(label "ESP"
+	(label "3V3"
 		(at 227.33 67.31 0)
 		(effects
 			(font
@@ -9186,7 +9186,7 @@
 			)
 		)
 	)
-	(label "ESP"
+	(label "3V3"
 		(at 142.24 91.44 90)
 		(fields_autoplaced yes)
 		(uuid "1c8b7856-2aee-4c76-b014-59427f2740b2")
