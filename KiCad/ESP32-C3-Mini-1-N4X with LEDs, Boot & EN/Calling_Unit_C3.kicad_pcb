@@ -8538,7 +8538,7 @@
 	)
 	(embedded_fonts no)
 
-	(gr_text "PWR (RED)"
+	(gr_text "POWER"
 		(at 137.5 79.5)
 		(layer "F.SilkS")
 		(uuid "2369a18c380799ab")
@@ -8550,7 +8550,7 @@
 		)
 	)
 
-	(gr_text "WIFI (GRN)"
+	(gr_text "WIFI"
 		(at 137.5 83.5)
 		(layer "F.SilkS")
 		(uuid "6f0806202bf6d7d3")
