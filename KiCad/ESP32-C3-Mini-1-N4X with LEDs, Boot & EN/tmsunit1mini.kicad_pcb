@@ -1323,8 +1323,9 @@
 		(descr "LED SMD 0805 (2012 Metric)")
 		(tags "LED")
 		(property "Reference" "D2"
-			(at 0 1.45 0)
+			(at 2.6 0 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "ba4d7b46-c673-40be-97ea-5120efc93530")
 			(effects
 				(font
@@ -1333,7 +1334,7 @@
 				)
 			)
 		)
-		(property "Value" "LED"
+		(property "Value" "WiFi (Green)"
 			(at 0 -1.45 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -3717,8 +3718,9 @@
 		(descr "LED SMD 0805 (2012 Metric)")
 		(tags "LED")
 		(property "Reference" "D1"
-			(at 0 -1.45 0)
+			(at 2.6 0 0)
 			(layer "F.SilkS")
+			(hide yes)
 			(uuid "2c9480c9-43f1-432b-941a-a9a5a9f47a1b")
 			(effects
 				(font
@@ -3727,7 +3729,7 @@
 				)
 			)
 		)
-		(property "Value" "LED"
+		(property "Value" "Power (Red)"
 			(at 0 1.45 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -6765,4 +6767,74 @@
 		)
 	)
 	(embedded_fonts no)
+
+
+
+
+
+
+
+
+
+
+
+	(gr_text "POWER"
+		(at 113.6 123.5)
+		(layer "F.SilkS")
+		(uuid "4f2b6601-25d0-42ce-9713-32e1afb23ac0")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
+
+	(gr_text "WIFI"
+		(at 117.2 123.5)
+		(layer "F.SilkS")
+		(uuid "6dba6747-d6d7-4b0b-82f7-dffd56044955")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
+
+	(gr_text "EN"
+		(at 131.5 110.49)
+		(layer "F.SilkS")
+		(uuid "00aaae87-b357-41d8-bee1-03c9f6b755de")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
+
+	(gr_text "BOOT"
+		(at 131.5 118.0)
+		(layer "F.SilkS")
+		(uuid "b8a83a00-4e56-4822-bd53-fdcc4bcdd068")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
+
+	(gr_text "TOKEN"
+		(at 126.0 133.5)
+		(layer "F.SilkS")
+		(uuid "92864258-02ea-4ea8-8379-cf4dd27d79e4")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
 )
