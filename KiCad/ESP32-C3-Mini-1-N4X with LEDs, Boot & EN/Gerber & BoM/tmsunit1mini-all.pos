@@ -1,4 +1,4 @@
-### Footprint positions - created on 2026-11-25T09:49:04 ###
+### Footprint positions - created on 2026-11-25T09:56:35 ###
 ### Printed by KiCad version 10.0.5
 ## Unit = mm, Angle = deg.
 ## Side : All
@@ -20,7 +20,7 @@ R6        470              R_0805_2012Metric                                    
 R7        470              R_0805_2012Metric                                         117.2000  -119.4000    0.0000  top
 R8        10k              R_0805_2012Metric                                         120.5000  -120.0500   90.0000  top
 SW1       TOKEN_BTN        SW_SPST_PTS645Sx43SMTR92                                  120.0000  -133.5000    0.0000  top
-SW2       EN               SW_SPST_PTS645Sx43SMTR92                                  137.1600  -110.4900    0.0000  top
+SW2       RESET            SW_SPST_PTS645Sx43SMTR92                                  137.1600  -110.4900    0.0000  top
 SW3       Boot             SW_SPST_PTS645Sx43SMTR92                                  137.1600  -118.0000    0.0000  top
 U1        ESP32-C3-MINI-1  ESP32C3MINI1N4X                                           120.0000  -111.7000    0.0000  top
 U2        AMS1117-3.3      SOT-223-3_TabPin2                                         107.5000  -126.0000    0.0000  top

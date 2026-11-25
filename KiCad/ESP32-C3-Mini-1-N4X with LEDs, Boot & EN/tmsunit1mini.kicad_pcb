@@ -789,7 +789,7 @@
 				)
 			)
 		)
-		(property "Value" "EN"
+		(property "Value" "RESET"
 			(at 0 3.6 0)
 			(layer "F.Fab")
 			(hide yes)
@@ -6802,8 +6802,8 @@
 		)
 	)
 
-	(gr_text "EN"
-		(at 131.5 110.49)
+	(gr_text "RESET"
+		(at 130.8 110.49)
 		(layer "F.SilkS")
 		(uuid "00aaae87-b357-41d8-bee1-03c9f6b755de")
 		(effects
