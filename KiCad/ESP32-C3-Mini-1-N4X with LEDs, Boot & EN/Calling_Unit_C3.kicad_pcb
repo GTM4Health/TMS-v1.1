@@ -268,7 +268,7 @@
 				)
 			)
 		)
-		(property "Value" "LED"
+		(property "Value" "Power (Red)"
 			(at 0 1.65 180)
 			(layer "F.Fab")
 			(uuid "8b3d9a26-a89e-479e-aae1-2efa1b86ade8")
@@ -463,7 +463,7 @@
 				)
 			)
 		)
-		(property "Value" "LED"
+		(property "Value" "WiFi (Green)"
 			(at 0 1.65 180)
 			(layer "F.Fab")
 			(uuid "4260b014-4118-4d8a-8fd3-47f6a56b7c2c")
@@ -8537,4 +8537,88 @@
 		)
 	)
 	(embedded_fonts no)
+
+	(gr_text "PWR (RED)"
+		(at 137.5 79.5)
+		(layer "F.SilkS")
+		(uuid "2369a18c380799ab")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
+
+	(gr_text "WIFI (GRN)"
+		(at 137.5 83.5)
+		(layer "F.SilkS")
+		(uuid "6f0806202bf6d7d3")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
+
+	(gr_text "BOOT"
+		(at 134.4 94.5)
+		(layer "F.SilkS")
+		(uuid "7503635992539897")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
+
+	(gr_text "EN"
+		(at 134.4 108.5)
+		(layer "F.SilkS")
+		(uuid "d01e1b2634891146")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
+
+	(gr_text "CALL NEXT"
+		(at 93.76 112.5)
+		(layer "F.SilkS")
+		(uuid "5316e625e1abb1cd")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
+
+	(gr_text "CALL AGAIN"
+		(at 114.08 112.5)
+		(layer "F.SilkS")
+		(uuid "04caf62f3a156c31")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
+
+	(gr_text "RESET"
+		(at 134.4 112.5)
+		(layer "F.SilkS")
+		(uuid "3f7a7e2b228ed947")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.15)
+			)
+		)
+	)
 )

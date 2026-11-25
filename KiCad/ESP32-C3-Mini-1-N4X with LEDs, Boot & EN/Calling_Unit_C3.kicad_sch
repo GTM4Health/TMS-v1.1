@@ -6742,7 +6742,7 @@
 				)
 			)
 		)
-		(property "Value" "LED"
+		(property "Value" "WiFi (Green)"
 			(at 148.59 75.565 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7231,7 +7231,7 @@
 				)
 			)
 		)
-		(property "Value" "LED"
+		(property "Value" "Power (Red)"
 			(at 148.59 70.485 0)
 			(show_name no)
 			(do_not_autoplace no)
