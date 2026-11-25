@@ -3242,7 +3242,7 @@
 			)
 		)
 		(embedded_fonts no)
-		(model "C:\\Users\\Hi\\Desktop\\1\\Calling_Unit_ESP32C3\\Calling_Unit_Footprints.pretty\\ESP32-C3-MINI-1-N4X.stp"
+		(model "${KIPRJMOD}/Calling_Unit_Footprints.pretty/ESP32-C3-MINI-1-N4X.stp"
 			(offset
 				(xyz 0 0 0)
 			)
